@@ -46,12 +46,26 @@ const upsertUser = (userName) => {
   });
 };
 
-const ensureDataInDb = () => models.questions.findAll().then((result) => {
+const ensureDataInQuestionsDb = () => models.questions.findAll().then((result) => {
   if (result.length === 0) {
     populateDb().then(() => 'Questions added to database');
   } else {
     return 'Questions are in database';
   }
+});
+
+const ensureDataInAnswersDb = () => models.questions.findAll().then((res) => {
+  const promiseArray = [];
+  res.forEach((element) => {
+    helpers.getDataFromURL(`${constants.answersURL}/${element.id}`).then((data) => {
+      const createPromise = models.answers.create({
+        questionId: element.id,
+        answer: data.answer,
+      });
+      promiseArray.push(createPromise);
+    });
+  });
+  return Promise.all(promiseArray).then(() => 'Answers added');
 });
 
 const getUserAnswers = userName => models.users.findAll({
@@ -71,26 +85,29 @@ module.exports = [{
   method: 'POST',
   path: '/login',
   handler: (request, response) => {
-    ensureDataInDb().then((dbStatus) => {
-      upsertUser(request.payload.userName).then((userStatus) => {
-        models.questions.findAll().then((questions) => {
-          models.users.findAll({
-            where: {
-              userName: request.payload.userName,
-            },
-            include: [
-              {
-                model: models.useranswers,
-                as: 'answers',
+    ensureDataInQuestionsDb().then((questionDbStatus) => {
+      ensureDataInAnswersDb().then((answerDbStatus) => {
+        upsertUser(request.payload.userName).then((userStatus) => {
+          models.questions.findAll().then((questions) => {
+            models.users.findAll({
+              where: {
+                userName: request.payload.userName,
               },
-            ],
-          }).then((res) => {
-            response({
-              statusCode: 201,
-              dbStatus,
-              userStatus,
-              questions,
-              res,
+              include: [
+                {
+                  model: models.useranswers,
+                  as: 'answers',
+                },
+              ],
+            }).then((res) => {
+              response({
+                statusCode: 201,
+                questionDbStatus,
+                answerDbStatus,
+                userStatus,
+                questions,
+                res,
+              });
             });
           });
         });
