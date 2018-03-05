@@ -17,7 +17,7 @@ const getOptionsFromQuestion = (question) => {
   return options;
 };
 
-const populateDb = () => {
+const populateQuestionsDb = () => {
   const promiseArray = [];
   return helpers.getDataFromURL(constants.questionsURL).then((data) => {
     data.allQuestions.forEach((question) => {
@@ -27,6 +27,22 @@ const populateDb = () => {
         options: getOptionsFromQuestion(question),
       });
       promiseArray.push(createPromise);
+    });
+    return Promise.all(promiseArray);
+  });
+};
+
+const populateAnswersDb = () => {
+  const promiseArray = [];
+  return models.questions.findAll().then((res) => {
+    res.forEach((element) => {
+      helpers.getDataFromURL(`${constants.answersURL}/${element.id}`).then((data) => {
+        const createPromise = models.answers.create({
+          questionId: element.id,
+          answer: data.answer,
+        });
+        promiseArray.push(createPromise);
+      });
     });
     return Promise.all(promiseArray);
   });
@@ -48,25 +64,21 @@ const upsertUser = (userName) => {
 
 const ensureDataInQuestionsDb = () => models.questions.findAll().then((result) => {
   if (result.length === 0) {
-    populateDb().then(() => 'Questions added to database');
+    populateQuestionsDb().then(() => 'Questions added to database');
   } else {
+    console.log('this si stest');
     return 'Questions are in database';
   }
 });
 
-const ensureDataInAnswersDb = () => models.questions.findAll().then((res) => {
-  const promiseArray = [];
-  res.forEach((element) => {
-    helpers.getDataFromURL(`${constants.answersURL}/${element.id}`).then((data) => {
-      const createPromise = models.answers.create({
-        questionId: element.id,
-        answer: data.answer,
-      });
-      promiseArray.push(createPromise);
-    });
-  });
-  return Promise.all(promiseArray).then(() => 'Answers added');
+const ensureDataInAnswersDb = () => models.answers.findAll().then((ans) => {
+  if (ans.length === 0) {
+    populateAnswersDb().then(() => 'Answers added');
+  } else {
+    return 'Answers already in table';
+  }
 });
+
 
 const getUserAnswers = userName => models.users.findAll({
   where: {
@@ -76,7 +88,7 @@ const getUserAnswers = userName => models.users.findAll({
     model: models.useranswers,
     as: 'answers',
   }],
-}).then(userAnswers => userAnswers);
+}).then(res => res);
 
 // .then is not a function
 // const getQuestions = () => models.questions.findAll().then(result => result);
@@ -89,17 +101,7 @@ module.exports = [{
       ensureDataInAnswersDb().then((answerDbStatus) => {
         upsertUser(request.payload.userName).then((userStatus) => {
           models.questions.findAll().then((questions) => {
-            models.users.findAll({
-              where: {
-                userName: request.payload.userName,
-              },
-              include: [
-                {
-                  model: models.useranswers,
-                  as: 'answers',
-                },
-              ],
-            }).then((res) => {
+            getUserAnswers(request.payload.userName).then((res) => {
               response({
                 statusCode: 201,
                 questionDbStatus,
@@ -131,7 +133,7 @@ module.exports = [{
 
 // models.questions.findAll().then((result) => {
 //   if (result.length === 0) {
-//     populateDb().then((questionsVals) => {
+//     populateQuestionsDb().then((questionsVals) => {
 //       upsertUser(request.payload.userName).then((userStatus) => {
 //         response({
 //           statusCode: 201,
