@@ -32,31 +32,84 @@ const populateDb = () => {
   });
 };
 
+const upsertUser = (userName) => {
+  let userStatus = '';
+  return models.users.upsert({
+    userName,
+  }).then((userResult) => {
+    if (userResult) {
+      userStatus = 'New user created';
+    } else {
+      userStatus = 'User already exists';
+    }
+    return userStatus;
+  });
+};
+
+const ensureDataInDb = () => models.questions.findAll().then((result) => {
+  if (result.length === 0) {
+    populateDb().then(() => 'Questions added to database');
+  } else {
+    return 'Questions are in database';
+  }
+});
+
+const getUserAnswers = userName => models.users.findAll({
+  where: {
+    userName,
+  },
+  include: [{
+    model: models.useranswers,
+    as: 'answers',
+  }],
+}).then(userAnswers => userAnswers);
+
+// .then is not a function
+// const getQuestions = () => models.questions.findAll().then(result => result);
+
 module.exports = [{
   method: 'POST',
   path: '/login',
   handler: (request, response) => {
-    let message = '';
-    models.questions.findAll().then((result) => {
-      if (result.length === 0) {
-        populateDb().then((values) => {
-          message += 'Questions added to database \n';
-          models.users.upsert({
-            userName: request.payload.userName,
-          }).then((userResult) => {
-            if (userResult) {
-              message += 'New user created';
-            } else {
-              message += 'User already exists';
-            }
+    ensureDataInDb().then((dbStatus) => {
+      upsertUser(request.payload.userName).then((userStatus) => {
+        models.questions.findAll().then((questions) => {
+          models.users.findAll({
+            where: {
+              userName: request.payload.userName,
+            },
+            include: [
+              {
+                model: models.useranswers,
+                as: 'answers',
+              },
+            ],
+          }).then((res) => {
             response({
               statusCode: 201,
-              message,
+              dbStatus,
+              userStatus,
+              questions,
+              res,
             });
           });
         });
-      }
+      });
     });
+
+
+    // models.questions.findAll().then((result) => {
+    //   if (result.length === 0) {
+    //     populateDb().then((questionsVals) => {
+    //       upsertUser(request.payload.userName).then((userStatus) => {
+    //         response({
+    //           statusCode: 201,
+    //           userStatus,
+    //         });
+    //       });
+    //     });
+    //   }
+    // });
 
 
     // Check if user exists
