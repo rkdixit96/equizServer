@@ -97,21 +97,6 @@ module.exports = [{
       });
     });
 
-
-    // models.questions.findAll().then((result) => {
-    //   if (result.length === 0) {
-    //     populateDb().then((questionsVals) => {
-    //       upsertUser(request.payload.userName).then((userStatus) => {
-    //         response({
-    //           statusCode: 201,
-    //           userStatus,
-    //         });
-    //       });
-    //     });
-    //   }
-    // });
-
-
     // Check if user exists
     // if not create user and send questions
     // if exists send questions and user options
@@ -125,3 +110,17 @@ module.exports = [{
     },
   },
 }];
+
+
+// models.questions.findAll().then((result) => {
+//   if (result.length === 0) {
+//     populateDb().then((questionsVals) => {
+//       upsertUser(request.payload.userName).then((userStatus) => {
+//         response({
+//           statusCode: 201,
+//           userStatus,
+//         });
+//       });
+//     });
+//   }
+// });

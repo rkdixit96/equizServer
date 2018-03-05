@@ -2,8 +2,14 @@
 
 module.exports = (sequelize, DataTypes) => {
   const useranswers = sequelize.define('useranswers', {
-    userId: DataTypes.INTEGER,
-    questionId: DataTypes.INTEGER,
+    userId: {
+      type: DataTypes.INTEGER,
+      unique: 'compositeIndex',
+    },
+    questionId: {
+      type: DataTypes.INTEGER,
+      unique: 'compositeIndex',
+    },
     answer: DataTypes.STRING,
   }, {});
   useranswers.associate = function (models) {
