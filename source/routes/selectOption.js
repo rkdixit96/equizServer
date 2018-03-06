@@ -4,10 +4,11 @@ module.exports = [{
   method: 'POST',
   path: '/selectOption',
   handler: (request, response) => {
+    const reqData = JSON.parse(request.payload);
     models.useranswers.upsert({
-      userId: request.payload.userId,
-      questionId: request.payload.questionId,
-      answer: request.payload.answer,
+      userId: reqData.userId,
+      questionId: reqData.questionId,
+      answer: reqData.answer,
     }).then((res) => {
       response({
         statusCode: 201,

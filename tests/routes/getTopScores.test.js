@@ -5,6 +5,7 @@ describe('Testing get topscore request', () => {
     const options = {
       method: 'GET',
       url: '/getTopScores',
+
     };
 
     server.inject(options, (response) => {

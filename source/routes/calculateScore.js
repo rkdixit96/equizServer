@@ -4,10 +4,11 @@ module.exports = [{
   method: 'POST',
   path: '/calculateScore',
   handler: (request, response) => {
+    const reqData = JSON.parse(request.payload);
     models.answers.findAll().then((ans) => {
       models.useranswers.findAll({
         where: {
-          userId: request.payload.userId,
+          userId: JSON.parse(reqData.userId),
         },
       }).then((userans) => {
         let score = 0;
@@ -22,7 +23,7 @@ module.exports = [{
         }
         models.users.update({ score }, {
           where: {
-            id: request.payload.userId,
+            id: reqData.userId,
           },
         }).then(() => {
           response({
