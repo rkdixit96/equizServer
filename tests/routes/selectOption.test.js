@@ -1,12 +1,21 @@
 const server = require('../../source/server');
+const models = require('../../models');
 
 describe('Testing POST option request', () => {
+  beforeAll((done) => {
+    models.users.upsert({
+      id: 999,
+      userName: 'selectOptionUser',
+    }).then(() => {
+      done();
+    }).catch();
+  });
   test('Responds with 201 statusCode', (done) => {
     const options = {
       method: 'POST',
       url: '/selectOption',
       payload: {
-        userName: 'genericUsername',
+        userId: 999,
         questionId: 12,
         answer: 'New Delhi',
       },

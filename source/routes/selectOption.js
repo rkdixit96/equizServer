@@ -4,7 +4,7 @@ module.exports = [{
   method: 'POST',
   path: '/selectOption',
   handler: (request, response) => {
-    const reqData = JSON.parse(request.payload);
+    const reqData = request.payload;
     models.useranswers.upsert({
       userId: reqData.userId,
       questionId: reqData.questionId,

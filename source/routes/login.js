@@ -64,19 +64,16 @@ const upsertUser = (userName) => {
 
 const ensureDataInQuestionsDb = () => models.questions.findAll().then((result) => {
   if (result.length === 0) {
-    populateQuestionsDb().then(() => 'Questions added to database');
-  } else {
-    console.log('this si stest');
-    return 'Questions are in database';
+    return populateQuestionsDb().then(() => 'Questions added to database');
   }
+  return 'Questions are in database';
 });
 
 const ensureDataInAnswersDb = () => models.answers.findAll().then((ans) => {
   if (ans.length === 0) {
-    populateAnswersDb().then(() => 'Answers added');
-  } else {
-    return 'Answers already in table';
+    return populateAnswersDb().then(() => 'Answers added');
   }
+  return 'Answers already in table';
 });
 
 

@@ -7,30 +7,35 @@ describe('Testing POST user request', () => {
       .then(() => {
         done();
       }).catch();
+
+    models.questions.destroy({ cascade: true, truncate: true }).then(() => {
+      done();
+    }).catch();
   });
 
-  // afterAll((done) => {
-  //   models.users.destroy({
-  //     where: { userName: 'CrazyUniqueUserName' },
-  //     truncate: true,
-  //   }).then(() => {
-  //     done();
-  //   }).catch();
-  // });
+  afterAll((done) => {
+    models.users.destroy({
+      where: { userName: 'CrazyUniqueUserName' },
+      truncate: true,
+      cascade: true,
+    }).then(() => {
+      done();
+    }).catch();
+  });
 
-  // test('Responds with message new user created', (done) => {
-  //   const options = {
-  //     method: 'POST',
-  //     url: '/login',
-  //     payload: {
-  //       userName: 'CrazyUniqueUserName',
-  //     },
-  //   };
-  //   server.inject(options, (response) => {
-  //     expect(response.result.userStatus).toBe('New user created');
-  //     done();
-  //   });
-  // }, 10000);
+  test('Responds with message new user created', (done) => {
+    const options = {
+      method: 'POST',
+      url: '/login',
+      payload: {
+        userName: 'CrazyUniqueUserName',
+      },
+    };
+    server.inject(options, (response) => {
+      expect(response.result.userStatus).toBe('New user created');
+      done();
+    });
+  }, 10000);
 
   test('Responds with message user already exists for old user', (done) => {
     const options = {
@@ -74,20 +79,20 @@ describe('Testing POST user request', () => {
     });
   }, 20000);
 
-  // test('Questions database gets populated after call', () => {
-  //   const options = {
-  //     method: 'POST',
-  //     url: '/login',
-  //     payload: {
-  //       userName: 'genericUsername',
-  //     },
-  //   };
-  //   server.inject(options, (response) => {
-  //     if (response.result.statusCode === 201) {
-  //       models.questions.findAll().then((result) => {
-  //         expect(result.length).toBeGreaterThan(0);
-  //       });
-  //     }
-  //   });
-  // }, 20000);
+  test('Questions database gets populated after call', () => {
+    const options = {
+      method: 'POST',
+      url: '/login',
+      payload: {
+        userName: 'genericUsername',
+      },
+    };
+    server.inject(options, (response) => {
+      if (response.result.statusCode === 201) {
+        models.questions.findAll().then((result) => {
+          expect(result.length).toBeGreaterThan(0);
+        });
+      }
+    });
+  }, 20000);
 });

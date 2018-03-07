@@ -6,7 +6,7 @@ describe('Testing POST calulateScore request', () => {
       method: 'POST',
       url: '/calculateScore',
       payload: {
-        userName: 'genericUsername',
+        userId: 999,
       },
     };
 
