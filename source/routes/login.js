@@ -112,7 +112,10 @@ module.exports = [{
         });
       });
     });
-
+    // Check if data in database
+    // If not populate database
+    // Check if answers are in database
+    // if not populate database
     // Check if user exists
     // if not create user and send questions
     // if exists send questions and user options

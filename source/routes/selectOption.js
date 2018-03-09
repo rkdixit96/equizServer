@@ -9,7 +9,7 @@ module.exports = [{
       userId: reqData.userId,
       questionId: reqData.questionId,
       answer: reqData.answer,
-    }).then((res) => {
+    }).then(() => {
       response({
         statusCode: 201,
       });

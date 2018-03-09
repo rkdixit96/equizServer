@@ -1,5 +1,5 @@
 const Hapi = require('hapi');
-const routes = require('./routes');
+const Routes = require('./routes');
 
 const server = new Hapi.Server();
 
@@ -8,7 +8,7 @@ server.connection({
   host: 'localhost',
 });
 
-server.route(routes);
+server.route(Routes);
 
 if (!module.parent) {
   server.start((err) => {

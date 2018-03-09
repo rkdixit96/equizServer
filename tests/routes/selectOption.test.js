@@ -10,6 +10,19 @@ describe('Testing POST option request', () => {
       done();
     }).catch();
   });
+
+  afterAll((done) => {
+    models.users.destroy({
+      where: {
+        userName: 'selectOptionUser',
+      },
+      truncate: true,
+      cascade: true,
+    }).then(() => {
+      done();
+    }).catch();
+  });
+
   test('Responds with 201 statusCode', (done) => {
     const options = {
       method: 'POST',
@@ -20,10 +33,9 @@ describe('Testing POST option request', () => {
         answer: 'New Delhi',
       },
     };
-
     server.inject(options, (response) => {
       expect(response.result.statusCode).toBe(201);
       done();
     });
-  });
+  }, 10000);
 });

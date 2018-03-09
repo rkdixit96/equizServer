@@ -1,5 +1,3 @@
-
-
 module.exports = (sequelize, DataTypes) => {
   const useranswers = sequelize.define('useranswers', {
     userId: {
@@ -13,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
     answer: DataTypes.STRING,
   }, {});
   useranswers.associate = function (models) {
-    models.useranswers.belongsTo(models.users, { as: 'user' });
-    models.useranswers.belongsTo(models.questions, { as: 'question' });
+    // models.useranswers.belongsTo(models.users, { as: 'user' });
+    // models.useranswers.belongsTo(models.questions, { as: 'question' });
   };
   return useranswers;
 };
