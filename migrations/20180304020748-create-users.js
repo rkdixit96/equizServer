@@ -1,3 +1,4 @@
+/* eslint-disable */
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
@@ -12,7 +13,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       score: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,

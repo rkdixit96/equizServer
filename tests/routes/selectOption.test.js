@@ -1,5 +1,6 @@
 const server = require('../../source/server');
 const models = require('../../models');
+const DbHelpers = require('../../source/dbHelpers');
 
 describe('Testing POST option request', () => {
   beforeAll((done) => {
@@ -7,21 +8,23 @@ describe('Testing POST option request', () => {
       id: 999,
       userName: 'selectOptionUser',
     }).then(() => {
+      // DbHelpers.ensureDataInQuestionsDb().then(() => {
       done();
+      // });
     }).catch();
   });
 
-  afterAll((done) => {
-    models.users.destroy({
-      where: {
-        userName: 'selectOptionUser',
-      },
-      truncate: true,
-      cascade: true,
-    }).then(() => {
-      done();
-    }).catch();
-  });
+  // afterAll((done) => {
+  //   models.users.destroy({
+  //     where: {
+  //       userName: 'selectOptionUser',
+  //     },
+  //     truncate: true,
+  //     cascade: true,
+  //   }).then(() => {
+  //     done();
+  //   }).catch();
+  // });
 
   test('Responds with 201 statusCode', (done) => {
     const options = {
@@ -37,5 +40,5 @@ describe('Testing POST option request', () => {
       expect(response.result.statusCode).toBe(201);
       done();
     });
-  }, 10000);
+  });
 });

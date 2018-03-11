@@ -1,6 +1,6 @@
 const login = require('./login');
 const selectOption = require('./selectOption');
 const calculateScore = require('./calculateScore');
-const getTopScore = require('./getTopScores');
+const topScores = require('./topScores');
 
-module.exports = [].concat(login, selectOption, calculateScore, getTopScore);
+module.exports = [].concat(login, selectOption, calculateScore, topScores);

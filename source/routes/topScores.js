@@ -5,7 +5,7 @@ const { Op } = seqeulize;
 
 module.exports = [{
   method: 'GET',
-  path: '/getTopScores',
+  path: '/topScores',
   handler: (request, response) => {
     // Get top 5 userNames based on score
     models.users.findAll({

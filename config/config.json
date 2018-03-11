@@ -3,6 +3,7 @@
     "username": "krishnardixit",
     "password": null,
     "database": "quizdb",
+    "logging":false,
     "host": "127.0.0.1",
     "dialect": "postgres"
   },

@@ -7,5 +7,14 @@ module.exports = (sequelize, DataTypes) => {
     // models.questions.belongsTo(models.answers, { as: 'answer' });
     // models.questions.hasMany(models.useranswers, { as: 'useranswers' });
   };
+
+  questions.createQuestion = (question, options) => questions.create({
+    questionText: question.question,
+    id: question.questionId,
+    options,
+  });
+
+  questions.deleteAllQuestions = () => questions.destroy({ cascade: true, truncate: true });
+
   return questions;
 };

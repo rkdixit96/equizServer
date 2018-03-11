@@ -3,14 +3,12 @@ const models = require('../../models');
 
 describe('Testing POST user request', () => {
   beforeAll((done) => {
-    models.users.upsert({ userName: 'genericUsername' })
-      .then(() => {
-        done();
-      }).catch();
-
-    models.questions.destroy({ cascade: true, truncate: true }).then(() => {
-      done();
-    }).catch();
+    models.users.deleteAllUsers().then(() => {
+      models.users.createOrCheckUser('genericUsername')
+        .then(() => {
+          done();
+        }).catch();
+    });
   });
 
   afterAll((done) => {
@@ -35,7 +33,7 @@ describe('Testing POST user request', () => {
       expect(response.result.userStatus).toBe('New user created');
       done();
     });
-  }, 10000);
+  });
 
   test('Responds with message user already exists for old user', (done) => {
     const options = {
@@ -47,6 +45,19 @@ describe('Testing POST user request', () => {
     };
     server.inject(options, (response) => {
       expect(response.result.userStatus).toBe('User already exists');
+      done();
+    });
+  });
+
+  test('Responds with 400 statusCode for payload with no userName', (done) => {
+    const options = {
+      method: 'POST',
+      url: '/login',
+      payload: {
+      },
+    };
+    server.inject(options, (response) => {
+      expect(response.statusCode).toBe(400);
       done();
     });
   });
@@ -77,7 +88,7 @@ describe('Testing POST user request', () => {
       expect(response.result.statusCode).toBe(201);
       done();
     });
-  }, 20000);
+  });
 
   test('Questions database gets populated after call', () => {
     const options = {
@@ -89,10 +100,10 @@ describe('Testing POST user request', () => {
     };
     server.inject(options, (response) => {
       if (response.result.statusCode === 201) {
-        models.questions.findAll().then((result) => {
-          expect(result.length).toBeGreaterThan(0);
+        models.questions.count().then((count) => {
+          expect(count).toBeGreaterThan(0);
         });
       }
     });
-  }, 20000);
+  });
 });

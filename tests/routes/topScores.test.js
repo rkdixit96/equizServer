@@ -4,7 +4,7 @@ describe('Testing get topscore request', () => {
   test('Responds with 201 statusCode', (done) => {
     const options = {
       method: 'GET',
-      url: '/getTopScores',
+      url: '/topScores',
 
     };
 
